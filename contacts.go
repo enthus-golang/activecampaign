@@ -9,6 +9,10 @@ import (
 )
 
 type Contacts struct {
+	Contacts []Contact       `json:"contacts"`
+	Meta     FieldValuesMeta `json:"meta"`
+}
+type Contact struct {
 	CreateDate string `json:"cdate"`
 	Email      string `json:"email"`
 	Phone      string `json:"phone"`
