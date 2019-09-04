@@ -8,11 +8,36 @@ import (
 	"net/http"
 )
 
+type Contacts struct {
+	CreateDate string `json:"cdate"`
+	Email      string `json:"email"`
+	Phone      string `json:"phone"`
+	FirstName  string `json:"firstName,omitempty"`
+	LastName   string `json:"lastName,omitempty"`
+	ID         string `json:"id"`
+	UpdateDate string `json:"udate"`
+}
+
+func (a *ActiveCampaign) Contacts(ctx context.Context, pof *POF) (*Contacts, error) {
+	res, err := a.send(ctx, http.MethodGet, "contacts", pof, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var contacts Contacts
+	err = json.NewDecoder(res.Body).Decode(&contacts)
+	if err != nil {
+		return nil, err
+	}
+
+	return &contacts, err
+}
+
 type ContactCreate struct {
 	Email     string `json:"email"`
 	FirstName string `json:"firstName,omitempty"`
 	LastName  string `json:"lastName,omitempty"`
-	Phone     int    `json:"phone,omitempty"`
+	Phone     string `json:"phone,omitempty"`
 }
 
 func (a *ActiveCampaign) ContactCreate(ctx context.Context, contact ContactCreate) error {

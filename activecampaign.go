@@ -76,7 +76,6 @@ func (a *ActiveCampaign) send(ctx context.Context, method, api string, pof *POF,
 	if pof != nil {
 		query := u.Query()
 		if pof.Pagination != nil {
-			fmt.Println("asd")
 			query.Set("limit", strconv.Itoa(pof.Pagination.Limit))
 			query.Set("offset", strconv.Itoa(pof.Pagination.Offset))
 		}
