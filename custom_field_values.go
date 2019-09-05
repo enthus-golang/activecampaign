@@ -21,8 +21,8 @@ type FieldValue struct {
 	UpdateDate string `json:"udate"`
 }
 
-func (a *ActiveCampaign) FieldValues(ctx context.Context, pof *POF) (*FieldValues, error) {
-	res, err := a.send(ctx, http.MethodGet, "fieldValues", pof, nil)
+func (a *ActiveCampaign) fieldValues(ctx context.Context, pof *POF, url string) (*FieldValues, error) {
+	res, err := a.send(ctx, http.MethodGet, url, pof, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -34,4 +34,8 @@ func (a *ActiveCampaign) FieldValues(ctx context.Context, pof *POF) (*FieldValue
 	}
 
 	return &values, nil
+}
+
+func (a *ActiveCampaign) FieldValues(ctx context.Context, pof *POF) (*FieldValues, error) {
+	return a.fieldValues(ctx, pof, "fieldValues")
 }
