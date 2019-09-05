@@ -10,6 +10,11 @@ type Fields struct {
 	FieldOptions   interface{}     `json:"fieldOptions"`
 	FieldRelations []FieldRelation `json:"fieldRels"`
 	Fields         []Field         `json:"fields"`
+	Meta           FieldsMeta      `json:"meta"`
+}
+
+type FieldsMeta struct {
+	Total string `json:"total"`
 }
 
 type FieldRelation struct {
