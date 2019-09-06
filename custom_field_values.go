@@ -86,7 +86,7 @@ func (a *ActiveCampaign) UpdateFieldValue(ctx context.Context, id string, update
 	if err != nil {
 		return err
 	}
-	if res.StatusCode != http.StatusCreated {
+	if res.StatusCode != http.StatusOK {
 		return errors.New(res.Status)
 	}
 

@@ -86,7 +86,7 @@ func (a *ActiveCampaign) ContactCreate(ctx context.Context, contact ContactCreat
 	if err != nil {
 		return err
 	}
-	if res.StatusCode != http.StatusOK {
+	if res.StatusCode != http.StatusCreated {
 		return errors.New(res.Status)
 	}
 
