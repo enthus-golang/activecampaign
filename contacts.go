@@ -71,7 +71,15 @@ type ContactCreate struct {
 	Phone     string `json:"phone,omitempty"`
 }
 
-func (a *ActiveCampaign) ContactCreate(ctx context.Context, contact ContactCreate) error {
+type ContactCreated struct {
+	Email      string       `json:"email"`
+	CreateDate string       `json:"cdate"`
+	UpdateDate string       `json:"cdate"`
+	Links      ContactLinks `json:"links"`
+	ID         string       `json:"id"`
+}
+
+func (a *ActiveCampaign) ContactCreate(ctx context.Context, contact ContactCreate) (*ContactCreated, error) {
 	b := new(bytes.Buffer)
 	err := json.NewEncoder(b).Encode(struct {
 		Contact ContactCreate `json:"contact"`
@@ -79,18 +87,26 @@ func (a *ActiveCampaign) ContactCreate(ctx context.Context, contact ContactCreat
 		Contact: contact,
 	})
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	res, err := a.send(ctx, http.MethodPost, "contacts", nil, b)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if res.StatusCode != http.StatusCreated {
-		return errors.New(res.Status)
+		return nil, errors.New(res.Status)
 	}
 
-	return nil
+	var contactCreated struct {
+		Contact ContactCreated `json:"contact"`
+	}
+	err = json.NewDecoder(res.Body).Decode(&contactCreated)
+	if err != nil {
+		return nil, err
+	}
+
+	return &contactCreated.Contact, nil
 }
 
 //func (a *ActiveCampaign) ContactUpdate(ctx context.Context) error {
