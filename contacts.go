@@ -60,8 +60,8 @@ func (a *ActiveCampaign) Contacts(ctx context.Context, pof *POF) (*Contacts, err
 	return &contacts, err
 }
 
-func (a *ActiveCampaign) ContactFieldValues(ctx context.Context, pof *POF, contact string) (*FieldValues, error) {
-	return a.fieldValues(ctx, pof, "contacts/"+contact+"/fieldValues")
+func (a *ActiveCampaign) ContactFieldValues(ctx context.Context, pof *POF, id string) (*FieldValues, error) {
+	return a.fieldValues(ctx, pof, "contacts/"+id+"/fieldValues")
 }
 
 type ContactCreate struct {
@@ -109,6 +109,22 @@ func (a *ActiveCampaign) ContactCreate(ctx context.Context, contact ContactCreat
 	return &contactCreated.Contact, nil
 }
 
-//func (a *ActiveCampaign) ContactUpdate(ctx context.Context) error {
-//
-//}
+func (a *ActiveCampaign) ContactDelete(ctx context.Context, id string) error {
+	res, err := a.send(ctx, http.MethodDelete, "contacts/"+id, nil, nil)
+	if err != nil {
+		return err
+	}
+	if res.StatusCode == http.StatusOK {
+		return nil
+	}
+
+	var message struct {
+		Message string `json:"message"`
+	}
+	err = json.NewDecoder(res.Body).Decode(&message)
+	if err != nil {
+		return err
+	}
+
+	return errors.New(message.Message)
+}

@@ -1,3 +1,3 @@
 module gitlab.com/mclgmbh/golang-pkg/activecampaign
 
-go 1.12
+go 1.13
