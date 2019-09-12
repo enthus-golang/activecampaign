@@ -70,7 +70,7 @@ type Filtering struct {
 func (a *ActiveCampaign) send(ctx context.Context, method, api string, pof *POF, body io.Reader) (*http.Response, error) {
 	u, err := url.Parse(a.url + "/api/3/" + api)
 	if err != nil {
-		return nil, err
+		return nil, &Error{Op: "send", Err: err}
 	}
 
 	if pof != nil {
@@ -90,7 +90,7 @@ func (a *ActiveCampaign) send(ctx context.Context, method, api string, pof *POF,
 
 	req, err := http.NewRequest(method, u.String(), body)
 	if err != nil {
-		return nil, err
+		return nil, &Error{Op: "send", Err: err}
 	}
 	req.Header.Set("Api-Token", a.apiKey)
 
@@ -98,11 +98,11 @@ func (a *ActiveCampaign) send(ctx context.Context, method, api string, pof *POF,
 	//fmt.Println(string(b))
 	res, err := a.Client.Do(req.WithContext(ctx))
 	if err != nil {
-		return nil, err
+		return nil, &Error{Op: "send", Err: err}
 	}
 	//b, _ = httputil.DumpResponse(res, true)
 	//fmt.Println(string(b))
-	return res, err
+	return res, nil
 }
 
 func (a *ActiveCampaign) CredentialsTest() bool {

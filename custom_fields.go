@@ -51,14 +51,14 @@ type FieldLink struct {
 func (a *ActiveCampaign) Fields(ctx context.Context, pof *POF) (*Fields, error) {
 	res, err := a.send(ctx, http.MethodGet, "fields", pof, nil)
 	if err != nil {
-		return nil, err
+		return nil, &Error{Op: "fields", Err: err}
 	}
 
 	var fields Fields
 	err = json.NewDecoder(res.Body).Decode(&fields)
 	if err != nil {
-		return nil, err
+		return nil, &Error{Op: "fields", Err: err}
 	}
 
-	return &fields, err
+	return &fields, nil
 }

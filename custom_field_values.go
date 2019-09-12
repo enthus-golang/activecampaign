@@ -27,13 +27,13 @@ type FieldValue struct {
 func (a *ActiveCampaign) fieldValues(ctx context.Context, pof *POF, url string) (*FieldValues, error) {
 	res, err := a.send(ctx, http.MethodGet, url, pof, nil)
 	if err != nil {
-		return nil, err
+		return nil, &Error{Op: "field values", Err: err}
 	}
 
 	var values FieldValues
 	err = json.NewDecoder(res.Body).Decode(&values)
 	if err != nil {
-		return nil, err
+		return nil, &Error{Op: "field values", Err: err}
 	}
 
 	return &values, nil
@@ -49,7 +49,7 @@ type ChangeFieldValue struct {
 	Value   string `json:"value"`
 }
 
-func (a *ActiveCampaign) CreateFieldValue(ctx context.Context, create ChangeFieldValue) error {
+func (a *ActiveCampaign) FieldValueCreate(ctx context.Context, create ChangeFieldValue) error {
 	b := new(bytes.Buffer)
 	err := json.NewEncoder(b).Encode(struct {
 		FieldValue ChangeFieldValue `json:"fieldValue"`
@@ -57,21 +57,21 @@ func (a *ActiveCampaign) CreateFieldValue(ctx context.Context, create ChangeFiel
 		FieldValue: create,
 	})
 	if err != nil {
-		return err
+		return &Error{Op: "field value create", Err: err}
 	}
 
 	res, err := a.send(ctx, http.MethodPost, "fieldValues", nil, b)
 	if err != nil {
-		return err
+		return &Error{Op: "field value create", Err: err}
 	}
 	if res.StatusCode != http.StatusCreated {
-		return errors.New(res.Status)
+		return errors.New("field value create: " + res.Status)
 	}
 
 	return nil
 }
 
-func (a *ActiveCampaign) UpdateFieldValue(ctx context.Context, id string, update ChangeFieldValue) error {
+func (a *ActiveCampaign) FieldValueUpdate(ctx context.Context, id string, update ChangeFieldValue) error {
 	b := new(bytes.Buffer)
 	err := json.NewEncoder(b).Encode(struct {
 		FieldValue ChangeFieldValue `json:"fieldValue"`
@@ -79,15 +79,15 @@ func (a *ActiveCampaign) UpdateFieldValue(ctx context.Context, id string, update
 		FieldValue: update,
 	})
 	if err != nil {
-		return err
+		return &Error{Op: "field value update", Err: err}
 	}
 
 	res, err := a.send(ctx, http.MethodPut, "fieldValues/"+id, nil, b)
 	if err != nil {
-		return err
+		return &Error{Op: "field value update", Err: err}
 	}
 	if res.StatusCode != http.StatusOK {
-		return errors.New(res.Status)
+		return errors.New("field value update: " + res.Status)
 	}
 
 	return nil
