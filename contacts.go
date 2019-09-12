@@ -131,8 +131,8 @@ func (a *ActiveCampaign) ContactDelete(ctx context.Context, id string) error {
 
 type ContactUpdate struct {
 	Email     string `json:"email"`
-	FirstName string `json:"firstName,omitempty"`
-	LastName  string `json:"lastName,omitempty"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
 }
 
 func (a *ActiveCampaign) ContactUpdate(ctx context.Context, id string, contact ContactUpdate) error {
