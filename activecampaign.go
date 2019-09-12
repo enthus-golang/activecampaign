@@ -88,7 +88,7 @@ func (a *ActiveCampaign) send(ctx context.Context, method, api string, pof *POF,
 		u.RawQuery = query.Encode()
 	}
 
-	req, err := http.NewRequest(method, u.String(), body)
+	req, err := http.NewRequestWithContext(ctx, method, u.String(), body)
 	if err != nil {
 		return nil, &Error{Op: "send", Err: err}
 	}
@@ -96,7 +96,7 @@ func (a *ActiveCampaign) send(ctx context.Context, method, api string, pof *POF,
 
 	//b, _ := httputil.DumpRequest(req, true)
 	//fmt.Println(string(b))
-	res, err := a.Client.Do(req.WithContext(ctx))
+	res, err := a.Client.Do(req)
 	if err != nil {
 		return nil, &Error{Op: "send", Err: err}
 	}
