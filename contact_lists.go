@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"strconv"
 )
 
 type ContactAddedToList struct {
@@ -56,14 +55,14 @@ type AddContactToListRequest struct {
 	Status  int    `json:"status"`
 }
 
-func (a *ActiveCampaign) AddContactToList(ctx context.Context, contactID int, listID int) (*ContactAddedToList, error) {
+func (a *ActiveCampaign) AddContactToList(ctx context.Context, contactID string, listID string) (*ContactAddedToList, error) {
 	b := new(bytes.Buffer)
 	err := json.NewEncoder(b).Encode(struct {
 		ContactList AddContactToListRequest `json:"contactList"`
 	}{
 		ContactList: AddContactToListRequest{
-			List:    strconv.Itoa(listID),
-			Contact: strconv.Itoa(contactID),
+			List:    listID,
+			Contact: contactID,
 			Status:  1,
 		},
 	})
