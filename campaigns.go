@@ -98,7 +98,7 @@ type Campaign struct {
 	Created_by              string        `json:"created_by"`
 	Updated_by              string        `json:"updated_by"`
 	Links                   CampaignLinks `json:"links"`
-	Id                      string        `json:"id"`
+	ID                      string        `json:"id"`
 	User                    string        `json:"user"`
 	Automation              *string       `json:"automation"`
 }

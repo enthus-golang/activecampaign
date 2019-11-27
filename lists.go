@@ -58,7 +58,7 @@ type List struct {
 	Created_by             string    `json:"created_by"`
 	Updated_by             string    `json:"updated_by"`
 	Links                  ListLinks `json:"links"`
-	Id                     string    `json:"id"`
+	ID                     string    `json:"id"`
 	User                   string    `json:"user"`
 }
 

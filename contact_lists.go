@@ -34,7 +34,7 @@ type ContactList struct {
 	Ip4Unsub              string            `json:"ip4Unsub"`
 	UnsubscribeAutomation *string           `json:"unsubscribeAutomation"`
 	Links                 []ContactListLink `json:"links"`
-	Id                    string            `json:"id"`
+	ID                    string            `json:"id"`
 	Automation            *string           `json:"automation"`
 }
 
