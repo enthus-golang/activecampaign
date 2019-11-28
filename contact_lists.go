@@ -89,7 +89,7 @@ func (a *ActiveCampaign) AddContactToList(ctx context.Context, contactID string,
 }
 
 func (a *ActiveCampaign) ContactLists(ctx context.Context, contactID string) ([]ContactList, error) {
-	res, err := a.send(ctx, http.MethodGet, fmt.Sprintf("%s/contactLists", contactID), nil, nil)
+	res, err := a.send(ctx, http.MethodGet, fmt.Sprintf("contacts/%s/contactLists", contactID), nil, nil)
 	if err != nil {
 		return nil, &Error{Op: "contactLists", Err: err}
 	}
