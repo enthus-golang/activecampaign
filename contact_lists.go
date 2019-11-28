@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 )
 
@@ -85,4 +86,19 @@ func (a *ActiveCampaign) AddContactToList(ctx context.Context, contactID string,
 	}
 
 	return &contactAddedToList, nil
+}
+
+func (a *ActiveCampaign) ContactLists(ctx context.Context, contactID string) ([]ContactList, error) {
+	res, err := a.send(ctx, http.MethodGet, fmt.Sprintf("%s/contactLists", contactID), nil, nil)
+	if err != nil {
+		return nil, &Error{Op: "contactLists", Err: err}
+	}
+
+	var contactLists []ContactList
+	err = json.NewDecoder(res.Body).Decode(&contactLists)
+	if err != nil {
+		return nil, &Error{Op: "contactLists", Err: err}
+	}
+
+	return contactLists, nil
 }
