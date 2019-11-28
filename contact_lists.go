@@ -14,6 +14,10 @@ type ContactAddedToList struct {
 	ContactList ContactList `json:"contactList"`
 }
 
+type ContactLists struct {
+	ContactLists []ContactList `json:"contactLists"`
+}
+
 type ContactList struct {
 	Contact               string            `json:"contact"`
 	List                  string            `json:"list"`
@@ -88,17 +92,17 @@ func (a *ActiveCampaign) AddContactToList(ctx context.Context, contactID string,
 	return &contactAddedToList, nil
 }
 
-func (a *ActiveCampaign) ContactLists(ctx context.Context, contactID string) ([]ContactList, error) {
+func (a *ActiveCampaign) ContactLists(ctx context.Context, contactID string) (*ContactLists, error) {
 	res, err := a.send(ctx, http.MethodGet, fmt.Sprintf("contacts/%s/contactLists", contactID), nil, nil)
 	if err != nil {
 		return nil, &Error{Op: "contactLists", Err: err}
 	}
 
-	var contactLists []ContactList
+	var contactLists ContactLists
 	err = json.NewDecoder(res.Body).Decode(&contactLists)
 	if err != nil {
 		return nil, &Error{Op: "contactLists", Err: err}
 	}
 
-	return contactLists, nil
+	return &contactLists, nil
 }
