@@ -19,28 +19,28 @@ type ContactLists struct {
 }
 
 type ContactList struct {
-	Contact               string            `json:"contact"`
-	List                  string            `json:"list"`
-	Form                  *string           `json:"form"`
-	Seriesid              string            `json:"seriesid"`
-	Sdate                 string            `json:"sdate"`
-	Status                string            `json:"status"`
-	Responder             string            `json:"responder"`
-	Sync                  string            `json:"sync"`
-	Unsubreason           string            `json:"unsubreason"`
-	Campaign              *string           `json:"campaign"`
-	Message               *string           `json:"message"`
-	First_name            string            `json:"first_name"`
-	Last_name             string            `json:"last_name"`
-	Ip4Sub                string            `json:"ip4Sub"`
-	Sourceid              string            `json:"sourceid"`
-	AutosyncLog           *string           `json:"autosyncLog"`
-	Ip4_last              string            `json:"ip4_last"`
-	Ip4Unsub              string            `json:"ip4Unsub"`
-	UnsubscribeAutomation *string           `json:"unsubscribeAutomation"`
-	Links                 []ContactListLink `json:"links"`
-	ID                    string            `json:"id"`
-	Automation            *string           `json:"automation"`
+	Contact               string          `json:"contact"`
+	List                  string          `json:"list"`
+	Form                  *string         `json:"form"`
+	Seriesid              string          `json:"seriesid"`
+	Sdate                 string          `json:"sdate"`
+	Status                string          `json:"status"`
+	Responder             string          `json:"responder"`
+	Sync                  string          `json:"sync"`
+	Unsubreason           string          `json:"unsubreason"`
+	Campaign              *string         `json:"campaign"`
+	Message               *string         `json:"message"`
+	First_name            string          `json:"first_name"`
+	Last_name             string          `json:"last_name"`
+	Ip4Sub                string          `json:"ip4Sub"`
+	Sourceid              string          `json:"sourceid"`
+	AutosyncLog           *string         `json:"autosyncLog"`
+	Ip4_last              string          `json:"ip4_last"`
+	Ip4Unsub              string          `json:"ip4Unsub"`
+	UnsubscribeAutomation *string         `json:"unsubscribeAutomation"`
+	Links                 ContactListLink `json:"links"`
+	ID                    string          `json:"id"`
+	Automation            *string         `json:"automation"`
 }
 
 type ContactListLink struct {
