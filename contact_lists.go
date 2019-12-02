@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 )
 
 type ContactAddedToList struct {
@@ -55,19 +56,29 @@ type ContactListLink struct {
 }
 
 type AddContactToListRequest struct {
-	List    string `json:"list"`
-	Contact string `json:"contact"`
-	Status  int    `json:"status"`
+	List    int `json:"list"`
+	Contact int `json:"contact"`
+	Status  int `json:"status"`
 }
 
 func (a *ActiveCampaign) AddContactToList(ctx context.Context, contactID string, listID string) (*ContactAddedToList, error) {
 	b := new(bytes.Buffer)
-	err := json.NewEncoder(b).Encode(struct {
+
+	cID, err := strconv.Atoi(contactID)
+	if err != nil {
+		return nil, &Error{Op: "converting contactID to int", Err: err}
+	}
+	lID, err := strconv.Atoi(listID)
+	if err != nil {
+		return nil, &Error{Op: "converting listID to int", Err: err}
+	}
+
+	err = json.NewEncoder(b).Encode(struct {
 		ContactList AddContactToListRequest `json:"contactList"`
 	}{
 		ContactList: AddContactToListRequest{
-			List:    listID,
-			Contact: contactID,
+			List:    lID,
+			Contact: cID,
 			Status:  1,
 		},
 	})
