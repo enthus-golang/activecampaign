@@ -25,7 +25,7 @@ type ContactList struct {
 	Form                  *string         `json:"form"`
 	Seriesid              string          `json:"seriesid"`
 	Sdate                 string          `json:"sdate"`
-	Status                string          `json:"status"`
+	Status                interface{}     `json:"status"`
 	Responder             string          `json:"responder"`
 	Sync                  string          `json:"sync"`
 	Unsubreason           string          `json:"unsubreason"`
