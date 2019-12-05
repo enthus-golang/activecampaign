@@ -11,8 +11,7 @@ import (
 )
 
 type ContactAddedToList struct {
-	Contacts    []Contact   `json:"contacts"`
-	ContactList ContactList `json:"contactList"`
+	Contacts []Contact `json:"contacts"`
 }
 
 type ContactLists struct {
@@ -25,7 +24,7 @@ type ContactList struct {
 	Form                  *string         `json:"form"`
 	Seriesid              string          `json:"seriesid"`
 	Sdate                 string          `json:"sdate"`
-	Status                interface{}     `json:"status"`
+	Status                string          `json:"status"`
 	Responder             string          `json:"responder"`
 	Sync                  string          `json:"sync"`
 	Unsubreason           string          `json:"unsubreason"`
