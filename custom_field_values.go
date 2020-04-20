@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 )
 
@@ -88,6 +89,63 @@ func (a *ActiveCampaign) FieldValueUpdate(ctx context.Context, id string, update
 	}
 	if res.StatusCode != http.StatusOK {
 		return errors.New("field value update: " + res.Status)
+	}
+
+	return nil
+}
+
+type FieldOptions struct {
+	FieldOptions []FieldOption `json:"fieldOptions"`
+}
+type FieldOption struct {
+	Field      string `json:"field"`
+	OrderID    string `json:"orderid"`
+	Value      string `json:"value"`
+	Label      string `json:"label"`
+	IsDefault  string `json:"isdefault"`
+	CreateDate string `json:"cdate"`
+	UpdateDate string `json:"udate"`
+	ID         string `json:"id"`
+}
+
+func (a *ActiveCampaign) FieldOptions(ctx context.Context, field string) ([]FieldOption, error) {
+	res, err := a.send(ctx, http.MethodGet, fmt.Sprintf("fields/%s/options", field), nil, nil)
+	if err != nil {
+		return nil, &Error{Op: "field options", Err: err}
+	}
+
+	var values FieldOptions
+	err = json.NewDecoder(res.Body).Decode(&values)
+	if err != nil {
+		return nil, &Error{Op: "field options", Err: err}
+	}
+
+	return values.FieldOptions, nil
+}
+
+type CreateFieldOption struct {
+	Field string `json:"field"`
+	Value string `json:"value"`
+	Label string `json:"label"`
+}
+
+func (a *ActiveCampaign) FieldOptionCreate(ctx context.Context, create []CreateFieldOption) error {
+	b := new(bytes.Buffer)
+	err := json.NewEncoder(b).Encode(struct {
+		FieldOptions []CreateFieldOption `json:"fieldOptions"`
+	}{
+		FieldOptions: create,
+	})
+	if err != nil {
+		return &Error{Op: "field options create", Err: err}
+	}
+
+	res, err := a.send(ctx, http.MethodPost, "fieldOption/bulk", nil, b)
+	if err != nil {
+		return &Error{Op: "field options create", Err: err}
+	}
+	if res.StatusCode != http.StatusOK {
+		return errors.New("field options create: " + res.Status)
 	}
 
 	return nil
