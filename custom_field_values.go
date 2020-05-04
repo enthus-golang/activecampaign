@@ -144,7 +144,7 @@ func (a *ActiveCampaign) FieldOptionCreate(ctx context.Context, create []CreateF
 	if err != nil {
 		return &Error{Op: "field options create", Err: err}
 	}
-	if res.StatusCode != http.StatusOK {
+	if res.StatusCode != http.StatusCreated {
 		return errors.New("field options create: " + res.Status)
 	}
 
