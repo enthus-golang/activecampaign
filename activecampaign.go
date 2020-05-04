@@ -35,7 +35,7 @@ func New(url, apiKey string) (*ActiveCampaign, error) {
 	}
 
 	ac := ActiveCampaign{
-		Client: http.DefaultClient,
+		Client: &http.Client{},
 		output: "json",
 		url:    url,
 	}

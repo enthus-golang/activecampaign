@@ -89,6 +89,7 @@ func (a *ActiveCampaign) AddContactToList(ctx context.Context, contactID string,
 	if err != nil {
 		return nil, &Error{Op: "add contact to list", Err: err}
 	}
+	defer res.Body.Close()
 	if res.StatusCode != http.StatusCreated {
 		return nil, errors.New("add contact to list: " + res.Status)
 	}
@@ -107,6 +108,7 @@ func (a *ActiveCampaign) ContactLists(ctx context.Context, contactID string) (*C
 	if err != nil {
 		return nil, &Error{Op: "contactLists", Err: err}
 	}
+	defer res.Body.Close()
 
 	var contactLists ContactLists
 	err = json.NewDecoder(res.Body).Decode(&contactLists)

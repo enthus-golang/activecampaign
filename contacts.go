@@ -50,6 +50,7 @@ func (a *ActiveCampaign) Contacts(ctx context.Context, pof *POF) (*Contacts, err
 	if err != nil {
 		return nil, &Error{Op: "contacts", Err: err}
 	}
+	defer res.Body.Close()
 
 	var contacts Contacts
 	err = json.NewDecoder(res.Body).Decode(&contacts)
@@ -94,6 +95,7 @@ func (a *ActiveCampaign) ContactCreate(ctx context.Context, contact ContactCreat
 	if err != nil {
 		return nil, &Error{Op: "contact create", Err: err}
 	}
+	defer res.Body.Close()
 	if res.StatusCode != http.StatusCreated {
 		return nil, errors.New("contact create: " + res.Status)
 	}
@@ -114,6 +116,7 @@ func (a *ActiveCampaign) ContactDelete(ctx context.Context, id string) error {
 	if err != nil {
 		return &Error{Op: "contact delete", Err: err}
 	}
+	defer res.Body.Close()
 	if res.StatusCode == http.StatusOK {
 		return nil
 	}
@@ -150,6 +153,7 @@ func (a *ActiveCampaign) ContactUpdate(ctx context.Context, id string, contact C
 	if err != nil {
 		return &Error{Op: "contact update", Err: err}
 	}
+	defer res.Body.Close()
 	if res.StatusCode == http.StatusOK {
 		return nil
 	}
