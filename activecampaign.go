@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/http/httputil"
 	"net/url"
 	"strconv"
 	"strings"
@@ -94,8 +95,8 @@ func (a *ActiveCampaign) send(ctx context.Context, method, api string, pof *POF,
 	}
 	req.Header.Set("Api-Token", a.apiKey)
 
-	// b, _ := httputil.DumpRequest(req, true)
-	// fmt.Println(string(b))
+	b, _ := httputil.DumpRequest(req, true)
+	fmt.Println(string(b))
 	res, err := a.Client.Do(req)
 	if err != nil {
 		return nil, &Error{Op: "send", Err: err}
