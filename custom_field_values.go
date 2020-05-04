@@ -74,7 +74,7 @@ func (a *ActiveCampaign) FieldValueCreate(ctx context.Context, create ChangeFiel
 	return nil
 }
 
-func (a *ActiveCampaign) FieldValueUpdate(ctx context.Context, id string, update ChangeFieldValue) error {
+func (a *ActiveCampaign) FieldValueUpdate(ctx context.Context, update ChangeFieldValue) error {
 	b := new(bytes.Buffer)
 	err := json.NewEncoder(b).Encode(struct {
 		FieldValue ChangeFieldValue `json:"fieldValue"`
@@ -85,7 +85,7 @@ func (a *ActiveCampaign) FieldValueUpdate(ctx context.Context, id string, update
 		return &Error{Op: "field value update", Err: err}
 	}
 
-	res, err := a.send(ctx, http.MethodPut, "fieldValues/"+id, nil, b)
+	res, err := a.send(ctx, http.MethodPut, "fieldValues", nil, b)
 	if err != nil {
 		return &Error{Op: "field value update", Err: err}
 	}
