@@ -67,7 +67,7 @@ func (a *ActiveCampaign) FieldValueCreate(ctx context.Context, create ChangeFiel
 		return &Error{Op: "field value create", Err: err}
 	}
 	defer res.Body.Close()
-	if res.StatusCode != http.StatusCreated {
+	if !(res.StatusCode == http.StatusCreated || res.StatusCode == http.StatusOK) {
 		return errors.New("field value create: " + res.Status)
 	}
 
