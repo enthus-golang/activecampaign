@@ -97,7 +97,7 @@ func (a *ActiveCampaign) UpdateContactToList(ctx context.Context, contactID stri
 		return nil, &Error{Op: "update contact to list", Err: err}
 	}
 	defer res.Body.Close()
-	if res.StatusCode != http.StatusCreated {
+	if res.StatusCode != http.StatusCreated && res.StatusCode != http.StatusOK {
 		return nil, errors.New("update contact to list: " + res.Status)
 	}
 
