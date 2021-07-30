@@ -10,7 +10,7 @@ import (
 	"strconv"
 )
 
-type ContactAddedToList struct {
+type ContactUpdatedToList struct {
 	Contacts []Contact `json:"contacts"`
 }
 
@@ -54,13 +54,20 @@ type ContactListLink struct {
 	Message               string `json:"message"`
 }
 
-type AddContactToListRequest struct {
-	List    int `json:"list"`
-	Contact int `json:"contact"`
-	Status  int `json:"status"`
+type updateContactToListRequest struct {
+	List    int        `json:"list"`
+	Contact int        `json:"contact"`
+	Status  ListChange `json:"status"`
 }
 
-func (a *ActiveCampaign) AddContactToList(ctx context.Context, contactID string, listID string) (*ContactAddedToList, error) {
+type ListChange int
+
+const (
+	ListSubscribe   ListChange = 1
+	ListUnsubscribe ListChange = 2
+)
+
+func (a *ActiveCampaign) UpdateContactToList(ctx context.Context, contactID string, listID string, listChange ListChange) (*ContactUpdatedToList, error) {
 	b := new(bytes.Buffer)
 
 	cID, err := strconv.Atoi(contactID)
@@ -73,34 +80,34 @@ func (a *ActiveCampaign) AddContactToList(ctx context.Context, contactID string,
 	}
 
 	err = json.NewEncoder(b).Encode(struct {
-		ContactList AddContactToListRequest `json:"contactList"`
+		ContactList updateContactToListRequest `json:"contactList"`
 	}{
-		ContactList: AddContactToListRequest{
+		ContactList: updateContactToListRequest{
 			List:    lID,
 			Contact: cID,
-			Status:  1,
+			Status:  listChange,
 		},
 	})
 	if err != nil {
-		return nil, &Error{Op: "add contact to list", Err: err}
+		return nil, &Error{Op: "update contact to list", Err: err}
 	}
 
 	res, err := a.send(ctx, http.MethodPost, "contactLists", nil, b)
 	if err != nil {
-		return nil, &Error{Op: "add contact to list", Err: err}
+		return nil, &Error{Op: "update contact to list", Err: err}
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusCreated {
-		return nil, errors.New("add contact to list: " + res.Status)
+		return nil, errors.New("update contact to list: " + res.Status)
 	}
 
-	var contactAddedToList ContactAddedToList
-	err = json.NewDecoder(res.Body).Decode(&contactAddedToList)
+	var contactUpdatedToList ContactUpdatedToList
+	err = json.NewDecoder(res.Body).Decode(&contactUpdatedToList)
 	if err != nil {
 		return nil, err
 	}
 
-	return &contactAddedToList, nil
+	return &contactUpdatedToList, nil
 }
 
 func (a *ActiveCampaign) ContactLists(ctx context.Context, contactID string) (*ContactLists, error) {
