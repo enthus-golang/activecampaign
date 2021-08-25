@@ -61,6 +61,22 @@ func (a *ActiveCampaign) Contacts(ctx context.Context, pof *POF) (*Contacts, err
 	return &contacts, nil
 }
 
+func (a *ActiveCampaign) ListContacts(ctx context.Context, listID string) (*Contacts, error) {
+	res, err := a.send(ctx, http.MethodGet, "contacts?listid="+listID, nil, nil)
+	if err != nil {
+		return nil, &Error{Op: "list contacts", Err: err}
+	}
+	defer res.Body.Close()
+
+	var contacts Contacts
+	err = json.NewDecoder(res.Body).Decode(&contacts)
+	if err != nil {
+		return nil, &Error{Op: "list contacts", Err: err}
+	}
+
+	return &contacts, nil
+}
+
 func (a *ActiveCampaign) ContactFieldValues(ctx context.Context, pof *POF, id string) (*FieldValues, error) {
 	return a.fieldValues(ctx, pof, "contacts/"+id+"/fieldValues")
 }
