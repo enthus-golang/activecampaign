@@ -62,7 +62,7 @@ func (a *ActiveCampaign) Contacts(ctx context.Context, pof *POF) (*Contacts, err
 }
 
 func (a *ActiveCampaign) ListContacts(ctx context.Context, listID string) (*Contacts, error) {
-	res, err := a.send(ctx, http.MethodGet, "contacts?listid="+listID, nil, nil)
+	res, err := a.send(ctx, http.MethodGet, "contacts?listid="+listID+"&status=1", nil, nil)
 	if err != nil {
 		return nil, &Error{Op: "list contacts", Err: err}
 	}
