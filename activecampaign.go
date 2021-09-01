@@ -6,10 +6,11 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"net/http/httputil"
 	"net/url"
 	"strconv"
 	"strings"
+
+	"github.com/sethgrid/pester"
 )
 
 var (
@@ -19,7 +20,7 @@ var (
 
 // ActiveCampaign will be the main
 type ActiveCampaign struct {
-	Client *http.Client
+	Client *pester.Client
 
 	url    string
 	apiKey string
@@ -35,8 +36,13 @@ func New(url, apiKey string) (*ActiveCampaign, error) {
 		url = strings.TrimSuffix(url, "")
 	}
 
+	client := pester.New()
+	client.MaxRetries = 10
+	client.Backoff = pester.LinearBackoff
+	client.RetryOnHTTP429 = true
+
 	ac := ActiveCampaign{
-		Client: &http.Client{},
+		Client: client,
 		output: "json",
 		url:    url,
 	}
@@ -95,14 +101,15 @@ func (a *ActiveCampaign) send(ctx context.Context, method, api string, pof *POF,
 	}
 	req.Header.Set("Api-Token", a.apiKey)
 
-	b, _ := httputil.DumpRequest(req, true)
-	fmt.Println(string(b))
+	//b, _ := httputil.DumpRequest(req, true)
+	//fmt.Println(string(b))
 	res, err := a.Client.Do(req)
 	if err != nil {
 		return nil, &Error{Op: "send", Err: err}
 	}
 	// b, _ = httputil.DumpResponse(res, true)
 	// fmt.Println(string(b))
+
 	return res, nil
 }
 

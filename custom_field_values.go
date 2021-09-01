@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -91,7 +92,11 @@ func (a *ActiveCampaign) FieldValueUpdate(ctx context.Context, id string, update
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
-		return errors.New("field value update: " + res.Status)
+		b, err := ioutil.ReadAll(res.Body)
+		if err != nil {
+			return &Error{Op: "field value update", Err: err}
+		}
+		return errors.New("field value update: " + res.Status + ": " + string(b))
 	}
 
 	return nil
