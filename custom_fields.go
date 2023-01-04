@@ -53,6 +53,7 @@ func (a *ActiveCampaign) Fields(ctx context.Context, pof *POF) (*Fields, error) 
 	if err != nil {
 		return nil, &Error{Op: "fields", Err: err}
 	}
+	defer res.Body.Close()
 
 	var fields Fields
 	err = json.NewDecoder(res.Body).Decode(&fields)

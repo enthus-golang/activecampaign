@@ -68,6 +68,7 @@ func (a *ActiveCampaign) FieldValueCreate(ctx context.Context, create ChangeFiel
 		return &Error{Op: "field value create", Err: err}
 	}
 	defer res.Body.Close()
+
 	if !(res.StatusCode == http.StatusCreated || res.StatusCode == http.StatusOK) {
 		return errors.New("field value create: " + res.Status)
 	}
@@ -91,6 +92,7 @@ func (a *ActiveCampaign) FieldValueUpdate(ctx context.Context, id string, update
 		return &Error{Op: "field value update", Err: err}
 	}
 	defer res.Body.Close()
+
 	if res.StatusCode != http.StatusOK {
 		b, err := ioutil.ReadAll(res.Body)
 		if err != nil {
@@ -154,6 +156,7 @@ func (a *ActiveCampaign) FieldOptionCreate(ctx context.Context, create []CreateF
 		return &Error{Op: "field options create", Err: err}
 	}
 	defer res.Body.Close()
+
 	if res.StatusCode != http.StatusCreated {
 		return errors.New("field options create: " + res.Status)
 	}
