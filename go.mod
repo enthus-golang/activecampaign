@@ -1,4 +1,4 @@
-module gitlab.com/mclgmbh/golang-pkg/activecampaign
+module github.com/enthus-golang/activecampaign
 
 go 1.13
 
