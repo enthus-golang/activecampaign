@@ -91,7 +91,7 @@ type ContactCreate struct {
 type ContactCreated struct {
 	Email      string       `json:"email"`
 	CreateDate string       `json:"cdate"`
-	UpdateDate string       `json:"cdate"`
+	UpdateDate string       `json:"udate"`
 	Links      ContactLinks `json:"links"`
 	ID         string       `json:"id"`
 }
