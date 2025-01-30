@@ -1,8 +1,9 @@
 package activecampaign
 
 type Error struct {
-	Op  string
-	Err error
+	Op   string
+	Err  error
+	Body []byte
 }
 
 func (e *Error) Unwrap() error { return e.Err }

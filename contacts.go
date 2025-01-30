@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
 )
 
@@ -114,7 +115,12 @@ func (a *ActiveCampaign) ContactCreate(ctx context.Context, contact ContactCreat
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusCreated {
-		return nil, errors.New("contact create: " + res.Status)
+		body, err := io.ReadAll(res.Body)
+		if err != nil {
+			return nil, err
+		}
+
+		return nil, &Error{Op: "contact create", Err: errors.New("wrong status code"), Body: body}
 	}
 
 	var contactCreated struct {
