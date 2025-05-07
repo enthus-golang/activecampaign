@@ -73,7 +73,11 @@ func (a *ActiveCampaign) Lists(ctx context.Context, pof *POF) (*Lists, error) {
 	if err != nil {
 		return nil, &Error{Op: "lists", Err: err}
 	}
-	defer res.Body.Close()
+	defer func() {
+		if closeErr := res.Body.Close(); closeErr != nil && err == nil {
+			err = &Error{Op: "lists", Err: closeErr}
+		}
+	}()
 
 	var lists Lists
 	err = json.NewDecoder(res.Body).Decode(&lists)

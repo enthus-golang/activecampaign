@@ -31,7 +31,11 @@ func (a *ActiveCampaign) fieldValues(ctx context.Context, pof *POF, url string) 
 	if err != nil {
 		return nil, &Error{Op: "field values", Err: err}
 	}
-	defer res.Body.Close()
+	defer func() {
+		if closeErr := res.Body.Close(); closeErr != nil && err == nil {
+			err = &Error{Op: "field values", Err: closeErr}
+		}
+	}()
 
 	var values FieldValues
 	err = json.NewDecoder(res.Body).Decode(&values)
@@ -67,9 +71,13 @@ func (a *ActiveCampaign) FieldValueCreate(ctx context.Context, create ChangeFiel
 	if err != nil {
 		return &Error{Op: "field value create", Err: err}
 	}
-	defer res.Body.Close()
+	defer func() {
+		if closeErr := res.Body.Close(); closeErr != nil && err == nil {
+			err = &Error{Op: "field value create", Err: closeErr}
+		}
+	}()
 
-	if !(res.StatusCode == http.StatusCreated || res.StatusCode == http.StatusOK) {
+	if res.StatusCode != http.StatusCreated && res.StatusCode != http.StatusOK {
 		return errors.New("field value create: " + res.Status)
 	}
 
@@ -91,7 +99,11 @@ func (a *ActiveCampaign) FieldValueUpdate(ctx context.Context, id string, update
 	if err != nil {
 		return &Error{Op: "field value update", Err: err}
 	}
-	defer res.Body.Close()
+	defer func() {
+		if closeErr := res.Body.Close(); closeErr != nil && err == nil {
+			err = &Error{Op: "field value update", Err: closeErr}
+		}
+	}()
 
 	if res.StatusCode != http.StatusOK {
 		b, err := io.ReadAll(res.Body)
@@ -123,7 +135,11 @@ func (a *ActiveCampaign) FieldOptions(ctx context.Context, field string) ([]Fiel
 	if err != nil {
 		return nil, &Error{Op: "field options", Err: err}
 	}
-	defer res.Body.Close()
+	defer func() {
+		if closeErr := res.Body.Close(); closeErr != nil && err == nil {
+			err = &Error{Op: "field options", Err: closeErr}
+		}
+	}()
 
 	var values FieldOptions
 	err = json.NewDecoder(res.Body).Decode(&values)
@@ -155,7 +171,11 @@ func (a *ActiveCampaign) FieldOptionCreate(ctx context.Context, create []CreateF
 	if err != nil {
 		return &Error{Op: "field options create", Err: err}
 	}
-	defer res.Body.Close()
+	defer func() {
+		if closeErr := res.Body.Close(); closeErr != nil && err == nil {
+			err = &Error{Op: "field options create", Err: closeErr}
+		}
+	}()
 
 	if res.StatusCode != http.StatusCreated {
 		return errors.New("field options create: " + res.Status)
