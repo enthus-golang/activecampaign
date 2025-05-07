@@ -116,7 +116,11 @@ func (a *ActiveCampaign) Campaigns(ctx context.Context, pof *POF) (*Campaigns, e
 	if err != nil {
 		return nil, &Error{Op: "campaigns", Err: err}
 	}
-	defer res.Body.Close()
+	defer func() {
+		if cerr := res.Body.Close(); cerr != nil {
+			err = cerr
+		}
+	}()
 
 	var campaigns Campaigns
 	err = json.NewDecoder(res.Body).Decode(&campaigns)

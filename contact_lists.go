@@ -96,7 +96,11 @@ func (a *ActiveCampaign) UpdateContactToList(ctx context.Context, contactID stri
 	if err != nil {
 		return nil, &Error{Op: "update contact to list", Err: err}
 	}
-	defer res.Body.Close()
+	defer func() {
+		if cerr := res.Body.Close(); cerr != nil {
+			err = cerr
+		}
+	}()
 
 	if res.StatusCode != http.StatusCreated && res.StatusCode != http.StatusOK {
 		return nil, errors.New("update contact to list: " + res.Status)
@@ -116,7 +120,11 @@ func (a *ActiveCampaign) ContactLists(ctx context.Context, contactID string) (*C
 	if err != nil {
 		return nil, &Error{Op: "contactLists", Err: err}
 	}
-	defer res.Body.Close()
+	defer func() {
+		if cerr := res.Body.Close(); cerr != nil {
+			err = cerr
+		}
+	}()
 
 	var contactLists ContactLists
 	err = json.NewDecoder(res.Body).Decode(&contactLists)
