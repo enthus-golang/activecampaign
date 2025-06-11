@@ -9,8 +9,6 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-
-	"github.com/sethgrid/pester"
 )
 
 var (
@@ -20,7 +18,7 @@ var (
 
 // ActiveCampaign will be the main
 type ActiveCampaign struct {
-	Client *pester.Client
+	Client *http.Client
 
 	url    string
 	apiKey string
@@ -36,13 +34,8 @@ func New(url, apiKey string) (*ActiveCampaign, error) {
 		url = strings.TrimSuffix(url, "")
 	}
 
-	client := pester.New()
-	client.MaxRetries = 10
-	client.Backoff = pester.LinearBackoff
-	client.RetryOnHTTP429 = true
-
 	ac := ActiveCampaign{
-		Client: client,
+		Client: http.DefaultClient,
 		output: "json",
 		url:    url,
 	}
