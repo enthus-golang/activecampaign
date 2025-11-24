@@ -10,8 +10,8 @@ import (
 )
 
 type Contacts struct {
-	Contacts []Contact       `json:"contacts"`
-	Meta     FieldValuesMeta `json:"meta"`
+	Contacts []Contact `json:"contacts"`
+	// Meta     FieldValuesMeta `json:"meta"` - NX-14879 hotfix: commented out field that AC gives wrong type for.
 }
 
 type Contact struct {
