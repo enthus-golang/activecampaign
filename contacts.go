@@ -213,3 +213,60 @@ func (a *ActiveCampaign) ContactUpdate(ctx context.Context, id string, contact C
 
 	return errors.New("contact update: " + message.Message)
 }
+
+type ContactSync struct {
+	Email       string                  `json:"email"`
+	FirstName   string                  `json:"firstName,omitempty"`
+	LastName    string                  `json:"lastName,omitempty"`
+	Phone       string                  `json:"phone,omitempty"`
+	FieldValues []ContactSyncFieldValue `json:"fieldValues,omitempty"`
+}
+
+type ContactSyncFieldValue struct {
+	Field string `json:"field"`
+	Value string `json:"value"`
+}
+
+// ContactSync creates the contact or updates the one with the same email. All
+// field values are written in this one request, so an automation triggered by
+// one of them already sees the others.
+func (a *ActiveCampaign) ContactSync(ctx context.Context, contact ContactSync) (*ContactCreated, error) {
+	b := new(bytes.Buffer)
+	err := json.NewEncoder(b).Encode(struct {
+		Contact ContactSync `json:"contact"`
+	}{
+		Contact: contact,
+	})
+	if err != nil {
+		return nil, &Error{Op: "contact sync", Err: err}
+	}
+
+	res, err := a.send(ctx, http.MethodPost, "contact/sync", nil, b)
+	if err != nil {
+		return nil, &Error{Op: "contact sync", Err: err}
+	}
+	defer func() {
+		if closeErr := res.Body.Close(); closeErr != nil && err == nil {
+			err = &Error{Op: "contact sync", Err: closeErr}
+		}
+	}()
+
+	if res.StatusCode != http.StatusCreated && res.StatusCode != http.StatusOK {
+		body, err := io.ReadAll(res.Body)
+		if err != nil {
+			return nil, &Error{Op: "contact sync", Err: err}
+		}
+
+		return nil, &Error{Op: "contact sync", Err: errors.New("wrong status code"), Body: body}
+	}
+
+	var contactSynced struct {
+		Contact ContactCreated `json:"contact"`
+	}
+	err = json.NewDecoder(res.Body).Decode(&contactSynced)
+	if err != nil {
+		return nil, &Error{Op: "contact sync", Err: err}
+	}
+
+	return &contactSynced.Contact, nil
+}
